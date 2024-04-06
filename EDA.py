@@ -7,6 +7,7 @@ import seaborn as sns
 import numpy as np
 from sklearn.preprocessing import StandardScaler
 from dtw import *
+import plotly.graph_objects as go
 
 df = pd.read_csv(os.path.join(DATA_DIR, ORIGINAL_FILE))
 
@@ -62,6 +63,15 @@ plt.ylabel('Price')
 plt.grid(True)
 plt.legend()
 plt.show()
+
+fig = go.Figure(data=[go.Candlestick(x=df['date'],
+                open=df['open'],
+                high=df['high'],
+                low=df['low'],
+                close=df['close'])])
+
+fig.update_layout(height=800)
+fig.show()
 
 correlation_matrix = df_normalized.corr()
 plt.figure(figsize=(10, 6))
