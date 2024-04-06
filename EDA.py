@@ -1,3 +1,4 @@
+import itertools
 from constants import DATA_DIR, ORIGINAL_FILE
 import pandas as pd
 import os
@@ -36,20 +37,24 @@ print(valores_distintos)
 df = df.drop(['Name'], axis=1)
 print(df)
 
-
-
 # Crear un objeto StandardScaler
 scaler = StandardScaler()
 
 # Normalizar el DataFrame
-df_normalized = df.copy()  # Copiar el DataFrame original para preservar los datos originales
-df_normalized[df_normalized.columns[1:]] = scaler.fit_transform(df_normalized[df_normalized.columns[1:]])
+# Copiar el DataFrame original para preservar los datos originales
+df_normalized = df.copy()
+df_normalized[df_normalized.columns[1:]] = scaler.fit_transform(
+    df_normalized[df_normalized.columns[1:]])
 
-plt.plot(df_normalized['date'], df_normalized['open'], label='Open', color='blue')
-plt.plot(df_normalized['date'], df_normalized['high'], label='High', color='green')
+plt.plot(df_normalized['date'], df_normalized['open'],
+         label='Open', color='blue')
+plt.plot(df_normalized['date'], df_normalized['high'],
+         label='High', color='green')
 plt.plot(df_normalized['date'], df_normalized['low'], label='Low', color='red')
-plt.plot(df_normalized['date'], df_normalized['close'], label='Close', color='orange')
-plt.plot(df_normalized['date'], df_normalized['volume'], label='Volume', color='black')
+plt.plot(df_normalized['date'], df_normalized['close'],
+         label='Close', color='orange')
+plt.plot(df_normalized['date'], df_normalized['volume'],
+         label='Volume', color='black')
 
 plt.title('Stock market price analysis')
 plt.xlabel('Date')
@@ -65,19 +70,16 @@ plt.title('Matriz de Correlación')
 plt.show()
 
 
-
-
 def maximum_shearing_correlation_distance(dataframe, column1, column2):
     series1 = dataframe[column1].values
     series2 = dataframe[column2].values
 
-    
     # Inicialization
     max_distance = np.inf
     max_shift = 0
-    
+
     max_date = None
-    
+
     # Calcular la distancia para cada desplazamiento
     for shift, date in enumerate(dataframe['date']):
         distance = np.sum(np.abs(series1 - np.roll(series2, shift)))
@@ -85,22 +87,23 @@ def maximum_shearing_correlation_distance(dataframe, column1, column2):
             max_distance = distance
             max_shift = shift
             max_date = date
-    
+
     return max_distance, max_shift, max_date
 
-import itertools
 
 # Create a list with all possible combinations of columns
-column_combinations = list(itertools.combinations(df_normalized.columns[1:], 2))  # Exclude the 'date' column
+column_combinations = list(itertools.combinations(
+    df_normalized.columns[1:], 2))  # Exclude the 'date' column
 
 # Calculate the maximum shearing correlation distance for each column combination
 for column_pair in column_combinations:
-    max_dist, shift, max_date = maximum_shearing_correlation_distance(df_normalized, column_pair[0], column_pair[1])
-    print("Maximum shearing correlation distance between '{}' and '{}':".format(column_pair[0], column_pair[1]), max_dist)
+    max_dist, shift, max_date = maximum_shearing_correlation_distance(
+        df_normalized, column_pair[0], column_pair[1])
+    print("Maximum shearing correlation distance between '{}' and '{}':".format(
+        column_pair[0], column_pair[1]), max_dist)
     print("Shifting:", shift)
     print("Date:", max_date)
     print()
-
 
 
 print("We stay with the time series of open and volume")
