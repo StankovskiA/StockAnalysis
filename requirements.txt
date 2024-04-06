@@ -1,1 +1,6 @@
 pandas
+matplotlib
+seaborn
+scikit-learn
+dtw-python
+plotly
