@@ -66,7 +66,7 @@ plt.show()
 correlation_matrix = df_normalized.corr()
 plt.figure(figsize=(10, 6))
 sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', fmt=".2f")
-plt.title('Matriz de Correlación')
+plt.title('Correlation Matrix')
 plt.show()
 
 
@@ -116,3 +116,49 @@ distance = alignment.distance
 # Obtener la alineación entre las dos series
 alignment.plot(type="twoway")
 print(distance)
+
+#Closing prices line chart
+plt.plot(df['date'], df['close'], label='Close', zorder=1)
+
+for year in df['date'].dt.year.unique():
+    if year != 2018:
+        last_close = df[df['date'].dt.year == year]['close'].iloc[-1]
+        plt.scatter(df['date'][df['date'].dt.year == year].iloc[-1], last_close, color='red', s=30)
+
+plt.title('Closing Price of Microsoft')
+plt.ylabel('Close')
+plt.xlabel('Date')
+plt.show()
+
+
+#Histogram of Closing Prices
+plt.figure(figsize=(10, 6))
+sns.histplot(df_normalized['close'], kde=True, bins=30)
+plt.title('Distribution of Closing Prices')
+plt.xlabel('Close Price')
+plt.ylabel('Frequency')
+plt.show()
+
+
+#Line chart of Stock Prices and Volume Traded
+fig, ax1 = plt.subplots(figsize=(10, 6))
+
+# Closing prices on the first y-axis (left)
+ax1.plot(df_normalized['date'], df_normalized['close'], color='blue', label='Closing Price')
+ax1.set_xlabel('Date')
+ax1.set_ylabel('Closing Price')
+ax1.tick_params('y')
+ax1.lines[0].set_linewidth(1.5)
+
+# Volume on the second y-axis (right)
+ax2 = ax1.twinx()
+ax2.plot(df_normalized['date'], df_normalized['volume'], color='orange', label='Volume')
+ax2.set_ylabel('Volume')
+ax2.tick_params('y')
+ax2.lines[0].set_linewidth(1.5)
+
+ax1.legend(loc='upper left')
+ax2.legend(loc='upper right')
+
+plt.title('Stock Prices and Volume Traded')
+plt.show()
